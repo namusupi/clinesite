@@ -1,0 +1,162 @@
+import React, { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Shuffle } from 'lucide-react';
+
+const RandomDecisionHelper = () => {
+  const [mainCategory, setMainCategory] = useState('food');
+  const [foodSubCategory, setFoodSubCategory] = useState('korean');
+  const [result, setResult] = useState('');
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const categories = {
+    food: {
+      korean: [
+        '김치찌개', '된장찌개', '순두부찌개', '부대찌개', '청국장찌개',
+        '삼겹살', '갈비', '불고기', '제육볶음', '닭갈비',
+        '비빔밥', '물냉면', '비빔냉면', '잔치국수', '칼국수',
+        '감자탕', '삼계탕', '갈비탕', '설렁탕', '매운탕',
+        '떡볶이', '순대', '튀김', '김밥', '떡갈비',
+        '곱창', '막창', '대창', '족발', '보쌈',
+        '닭발', '찜닭', '백숙', '낙곱새', '아구찜',
+        '조개구이', '회', '물회', '대게', '백반',
+        '돼지국밥', '해장국', '순대국', '육개장', '김치볶음밥'
+      ],
+      chinese: [
+        '짜장면', '짬뽕', '울면', '탕수육', '볶음밥',
+        '마라탕', '마라샹궈', '양꼬치', '훠궈', '딤섬',
+        '깐풍기', '유린기', '고추잡채', '팔보채', '양장피',
+        '마파두부', '계란볶음밥', '칠리새우', '깐쇼새우', '라조기',
+        '동파육', '난자완스', '유산슬', '토마토달걀면', '중국냉면'
+      ],
+      japanese: [
+        '초밥', '사시미', '라멘', '우동', '소바',
+        '돈카츠', '규동', '가츠동', '규카츠', '오니기리',
+        '덴뿌라', '오코노미야키', '타코야키', '카레', '나베',
+        '샤브샤브', '스키야키', '규니쿠', '가라아게', '교자',
+        '텐동', '하이라이스', '멘치카츠', '야키니쿠', '야키소바'
+      ],
+      western: [
+        '스테이크', '파스타', '피자', '햄버거', '샌드위치',
+        '리조또', '오믈렛', '브런치', '타코', '부리토',
+        '샐러드', '또띠아', '퀘사디아', '치킨', '립',
+        '감바스', '빠에야', '라자냐', '그라탕', '치즈버거',
+        '시저샐러드', '크림파스타', '로제파스타', '알리오올리오', '봉골레'
+      ],
+      dessert: [
+        '케이크', '마카롱', '크로플', '와플', '빙수',
+        '아이스크림', '타르트', '크레페', '도넛', '베이글',
+        '초콜릿', '쿠키', '머핀', '브라우니', '푸딩',
+        '젤라또', '티라미수', '슈크림', '크로와상', '스콘',
+        '팬케이크', '에클레어', '다쿠아즈', '롤케이크', '파르페'
+      ]
+    },
+    date: [
+      '영화관', '카페', '공원', '미술관', '서점', 
+      '수족관', '동물원', '쇼핑몰', '게임센터', '피크닉',
+      '박물관', '식물원', '놀이공원', '콘서트', '마사지',
+      '방탈출', '보드게임카페', '노래방', '당구장', '볼링장',
+      '아이스링크', '롤러장', '클라이밍', '실내양궁장', '실내사격장'
+    ],
+    exercise: [
+      '조깅', '요가', '필라테스', '수영', '자전거',
+      '헬스', '등산', '테니스', '배드민턴', '축구',
+      '농구', '스트레칭', '줄넘기', '홈트레이닝', '댄스',
+      '크로스핏', '복싱', '킥복싱', '주짓수', '태권도',
+      '유도', '가라데', '합기도', '검도', '탁구'
+    ]
+  };
+
+  const categoryNames = {
+    food: '음식',
+    date: '데이트',
+    exercise: '운동'
+  };
+
+  const foodSubCategoryNames = {
+    korean: '한식',
+    chinese: '중식',
+    japanese: '일식',
+    western: '양식',
+    dessert: '디저트'
+  };
+
+  const getRandomItem = () => {
+    setIsAnimating(true);
+    
+    let count = 0;
+    const interval = setInterval(() => {
+      if (mainCategory === 'food') {
+        const randomIndex = Math.floor(Math.random() * categories.food[foodSubCategory].length);
+        setResult(categories.food[foodSubCategory][randomIndex]);
+      } else {
+        const randomIndex = Math.floor(Math.random() * categories[mainCategory].length);
+        setResult(categories[mainCategory][randomIndex]);
+      }
+      count++;
+      
+      if (count > 8) {
+        clearInterval(interval);
+        setIsAnimating(false);
+      }
+    }, 100);
+  };
+
+  return (
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl text-center">랜덤 결정 도우미</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
+          {Object.keys(categoryNames).map((category) => (
+            <Button
+              key={category}
+              variant={mainCategory === category ? "default" : "outline"}
+              onClick={() => setMainCategory(category)}
+              className="min-w-20"
+            >
+              {categoryNames[category]}
+            </Button>
+          ))}
+        </div>
+
+        {mainCategory === 'food' && (
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            {Object.keys(foodSubCategoryNames).map((subCategory) => (
+              <Button
+                key={subCategory}
+                variant={foodSubCategory === subCategory ? "default" : "outline"}
+                onClick={() => setFoodSubCategory(subCategory)}
+                className="min-w-20"
+              >
+                {foodSubCategoryNames[subCategory]}
+              </Button>
+            ))}
+          </div>
+        )}
+        
+        <div className="text-center mb-6">
+          <Button 
+            size="lg"
+            onClick={getRandomItem}
+            disabled={isAnimating}
+            className="gap-2"
+          >
+            <Shuffle className="w-4 h-4" />
+            {mainCategory === 'food' ? foodSubCategoryNames[foodSubCategory] : categoryNames[mainCategory]} 추천받기
+          </Button>
+        </div>
+
+        {result && (
+          <div className={`text-center text-2xl font-bold p-4 rounded-lg bg-slate-100 
+            ${isAnimating ? 'animate-pulse' : 'animate-bounce'}`}>
+            {result}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default RandomDecisionHelper;
